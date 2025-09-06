@@ -1,0 +1,96 @@
+{% extends "base.html" %}
+
+{% block title %}Branch Profile - {{ branch.branch_name }}{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card shadow">
+            <div class="card-header bg-primary text-white">
+                <h4 class="card-title mb-0">
+                    <i class="fas fa-user"></i> Branch Profile
+                </h4>
+            </div>
+            <div class="card-body">
+                <form method="POST" action="{{ url_for('branch.update_profile') }}">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="branch_name" class="form-label">Branch Name:</label>
+                                <input type="text" class="form-control" id="branch_name" 
+                                       value="{{ branch.branch_name }}" readonly>
+                                <div class="form-text">Branch name cannot be changed</div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="branch_code" class="form-label">Branch Code:</label>
+                                <input type="text" class="form-control" id="branch_code" 
+                                       value="{{ branch.branch_code }}" readonly>
+                                <div class="form-text">Branch code cannot be changed</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="email" class="form-label">Email:</label>
+                                <input type="email" class="form-control" id="email" 
+                                       value="{{ branch.email }}" readonly>
+                                <div class="form-text">Email cannot be changed</div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="phone" class="form-label">Phone:</label>
+                                <input type="tel" class="form-control" id="phone" name="phone" 
+                                       value="{{ branch.phone or '' }}">
+                                <div class="form-text">You can update your phone number</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="location" class="form-label">Location:</label>
+                        <textarea class="form-control" id="location" name="location" rows="3">{{ branch.location }}</textarea>
+                        <div class="form-text">You can update your location</div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label">Status:</label>
+                        <div>
+                            <span class="badge bg-{{ 'success' if branch.is_active else 'secondary' }} fs-6">
+                                <i class="fas fa-{{ 'check-circle' if branch.is_active else 'times-circle' }}"></i>
+                                {{ 'Active' if branch.is_active else 'Inactive' }}
+                            </span>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label">Created:</label>
+                        <div>
+                            <span class="text-muted">{{ branch.created_at.strftime('%Y-%m-%d %H:%M') }}</span>
+                        </div>
+                    </div>
+                    
+                    <hr>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <button type="submit" class="btn btn-primary w-100">
+                                <i class="fas fa-save"></i> Update Profile
+                            </button>
+                        </div>
+                        <div class="col-md-6">
+                            <a href="{{ url_for('branch.dashboard') }}" class="btn btn-outline-secondary w-100">
+                                <i class="fas fa-arrow-left"></i> Back to Dashboard
+                            </a>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

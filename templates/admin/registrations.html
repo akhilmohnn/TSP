@@ -1,0 +1,108 @@
+{% extends "base.html" %}
+
+{% block title %}Branch Registrations - Admin{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>
+        <i class="fas fa-user-check"></i> Branch Registrations
+    </h2>
+    <a href="{{ url_for('admin.dashboard') }}" class="btn btn-outline-primary">
+        <i class="fas fa-arrow-left"></i> Back to Dashboard
+    </a>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        {% if registrations %}
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Branch Name</th>
+                            <th>Branch Code</th>
+                            <th>Email</th>
+                            <th>Location</th>
+                            <th>Phone</th>
+                            <th>Status</th>
+                            <th>Submitted</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for registration in registrations %}
+                            <tr>
+                                <td>{{ registration.branch_name }}</td>
+                                <td><code>{{ registration.branch_code }}</code></td>
+                                <td>{{ registration.email }}</td>
+                                <td>{{ registration.location }}</td>
+                                <td>{{ registration.phone or 'N/A' }}</td>
+                                <td>
+                                    <span class="badge bg-{{ 'warning' if registration.status == 'pending' else 'success' if registration.status == 'approved' else 'danger' }}">
+                                        {{ registration.status|title }}
+                                    </span>
+                                </td>
+                                <td>{{ registration.submitted_at.strftime('%Y-%m-%d %H:%M') }}</td>
+                                <td>
+                                    {% if registration.status == 'pending' %}
+                                        <a href="{{ url_for('admin.approve_registration', registration_id=registration.id) }}" 
+                                           class="btn btn-sm btn-success me-1">
+                                            <i class="fas fa-check"></i> Approve
+                                        </a>
+                                        <button type="button" class="btn btn-sm btn-danger" 
+                                                data-bs-toggle="modal" 
+                                                data-bs-target="#rejectModal{{ registration.id }}">
+                                            <i class="fas fa-times"></i> Reject
+                                        </button>
+                                        
+                                        <!-- Reject Modal -->
+                                        <div class="modal fade" id="rejectModal{{ registration.id }}" tabindex="-1">
+                                            <div class="modal-dialog">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title">Reject Registration</h5>
+                                                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                                    </div>
+                                                    <form method="POST" action="{{ url_for('admin.reject_registration', registration_id=registration.id) }}">
+                                                        <div class="modal-body">
+                                                            <p>Are you sure you want to reject the registration for <strong>{{ registration.branch_name }}</strong>?</p>
+                                                            <div class="mb-3">
+                                                                <label for="rejection_reason{{ registration.id }}" class="form-label">Reason (optional):</label>
+                                                                <textarea class="form-control" id="rejection_reason{{ registration.id }}" 
+                                                                         name="rejection_reason" rows="3"></textarea>
+                                                            </div>
+                                                        </div>
+                                                        <div class="modal-footer">
+                                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                                            <button type="submit" class="btn btn-danger">Reject Registration</button>
+                                                        </div>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    {% else %}
+                                        <span class="text-muted">
+                                            {% if registration.reviewed_at %}
+                                                Reviewed on {{ registration.reviewed_at.strftime('%Y-%m-%d') }}
+                                            {% endif %}
+                                        </span>
+                                        {% if registration.rejection_reason %}
+                                            <br><small class="text-danger">Reason: {{ registration.rejection_reason }}</small>
+                                        {% endif %}
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <div class="text-center py-5">
+                <i class="fas fa-user-plus fa-3x text-muted mb-3"></i>
+                <h4 class="text-muted">No registration requests</h4>
+                <p class="text-muted">No branch registration requests have been submitted yet.</p>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

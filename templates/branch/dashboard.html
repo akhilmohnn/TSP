@@ -1,0 +1,138 @@
+{% extends "base.html" %}
+
+{% block title %}Branch Dashboard - {{ branch.branch_name }}{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <h2 class="mb-4">
+            <i class="fas fa-building"></i> {{ branch.branch_name }} Dashboard
+        </h2>
+    </div>
+</div>
+
+<div class="row mb-4">
+    <div class="col-md-4">
+        <div class="card bg-primary text-white">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <h5>Branch Code</h5>
+                        <h3>{{ branch.branch_code }}</h3>
+                    </div>
+                    <i class="fas fa-id-card fa-2x"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4">
+        <div class="card bg-success text-white">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <h5>Status</h5>
+                        <h3>{{ 'Active' if branch.is_active else 'Inactive' }}</h3>
+                    </div>
+                    <i class="fas fa-{{ 'check-circle' if branch.is_active else 'times-circle' }} fa-2x"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4">
+        <div class="card bg-info text-white">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <h5>Since</h5>
+                        <h3>{{ branch.created_at.strftime('%Y') }}</h3>
+                    </div>
+                    <i class="fas fa-calendar fa-2x"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-info-circle"></i> Branch Information
+                </h5>
+            </div>
+            <div class="card-body">
+                <table class="table table-borderless">
+                    <tr>
+                        <td><strong>Branch Name:</strong></td>
+                        <td>{{ branch.branch_name }}</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Branch Code:</strong></td>
+                        <td><code>{{ branch.branch_code }}</code></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Email:</strong></td>
+                        <td>{{ branch.email }}</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Phone:</strong></td>
+                        <td>{{ branch.phone or 'Not provided' }}</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Location:</strong></td>
+                        <td>{{ branch.location }}</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Created:</strong></td>
+                        <td>{{ branch.created_at.strftime('%Y-%m-%d %H:%M') }}</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-cogs"></i> Quick Actions
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="d-grid gap-2">
+                    <a href="{{ url_for('branch.profile') }}" class="btn btn-primary">
+                        <i class="fas fa-user"></i> View Profile
+                    </a>
+                    <button class="btn btn-outline-info" disabled>
+                        <i class="fas fa-chart-bar"></i> Reports (Coming Soon)
+                    </button>
+                    <button class="btn btn-outline-info" disabled>
+                        <i class="fas fa-cog"></i> Settings (Coming Soon)
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-bell"></i> Notifications
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="alert alert-info">
+                    <i class="fas fa-info-circle"></i>
+                    Welcome to your branch dashboard! Here you can manage your branch information and access various features.
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
