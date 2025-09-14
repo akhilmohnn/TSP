@@ -27,6 +27,23 @@ class Branch(db.Model):
     
     def __repr__(self):
         return f'<Branch {self.branch_name}>'
+    
+class Auditor(db.Model):
+    __tablename__ = 'auditors'   # ✅ force correct table name
+
+    id = db.Column(db.Integer, primary_key=True)
+    auditor_name = db.Column(db.String(100), nullable=False)
+    emp_code = db.Column(db.String(20), unique=True, nullable=False)
+    email = db.Column(db.String(120), unique=True, nullable=False)
+    password = db.Column(db.String(128), nullable=False)
+    phone = db.Column(db.String(20))
+    is_active = db.Column(db.Boolean, default=True)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    created_by = db.Column(db.Integer, db.ForeignKey('admin.id'), nullable=False)
+
+    def __repr__(self):
+        return f'<Auditor {self.auditor_name}>'
+    
 
 class BranchRegistration(db.Model):
     id = db.Column(db.Integer, primary_key=True)

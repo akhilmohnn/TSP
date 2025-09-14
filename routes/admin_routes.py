@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash, session
 from extensions import db, bcrypt
-from models import Admin, Branch, BranchRegistration
+from models import Admin, Branch, BranchRegistration,Auditor
 from datetime import datetime
 
 bp = Blueprint('admin', __name__)
@@ -73,6 +73,54 @@ def add_branch():
         return redirect(url_for('admin.branches'))
     
     return render_template('admin/add_branch.html')
+
+
+# Add new auditor
+@bp.route('/add_auditor', methods=['GET', 'POST'])
+@admin_required
+def add_auditor():
+    if request.method == 'POST':
+        auditor_name = request.form['aud_name']
+        emp_code = request.form['emp_code']
+        email = request.form['email']
+        password = request.form['password']
+        phone = request.form.get('phone', '')
+
+        # check duplicates
+        existing = Auditor.query.filter(
+            (Auditor.emp_code == emp_code) | (Auditor.email == email)
+        ).first()
+
+        if existing:
+            flash('This Auditor already exists!', 'error')
+            return render_template('admin/add_auditor.html')
+
+        hashed_password = bcrypt.generate_password_hash(password).decode('utf-8')
+
+        auditor = Auditor(
+            auditor_name=auditor_name,
+            emp_code=emp_code,
+            email=email,
+            password=hashed_password,
+            phone=phone,
+            created_by=session['user_id']
+        )
+
+        db.session.add(auditor)
+        db.session.commit()
+
+        flash('Auditor added successfully!', 'success')
+        return redirect(url_for('admin.auditors'))
+
+    return render_template('admin/add_auditor.html')
+
+
+@bp.route('/auditors')
+@admin_required
+def auditors():
+    all_auditors = Auditor.query.all()
+    return render_template('admin/auditors.html', auditors=all_auditors)
+
 
 @bp.route('/registrations')
 @admin_required
