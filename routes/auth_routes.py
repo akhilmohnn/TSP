@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash, session
 from extensions import db, bcrypt
-from models import Admin, Branch
+from models import Admin, Branch,Auditor
 
 bp = Blueprint('auth', __name__)
 
@@ -32,6 +32,17 @@ def login():
                 return redirect(url_for('branch.dashboard'))
             else:
                 flash('Invalid branch credentials or account not active!', 'error')
+                
+        elif user_type == 'auditor':
+            user = Auditor.query.filter_by(email=username, is_active=True).first()
+            if user and bcrypt.check_password_hash(user.password, password):
+                session['user_id'] = user.id
+                session['user_type'] = 'auditor'
+                session['username'] = user.auditor_name  
+                flash('Login successful!', 'success')
+                return redirect(url_for('auditor.dashboard'))
+            else:
+                flash('Invalid auditor credentials or account not active!', 'error')
     
     return render_template('login.html')
 
