@@ -16,15 +16,17 @@ db.init_app(app)
 bcrypt.init_app(app)
 
 # Import models after app initialization
-from models import Admin, Branch, BranchRegistration
+from models import Admin, Branch, BranchRegistration,Auditor
 
 # Import routes
-from routes import auth_routes, admin_routes, branch_routes
+from routes import auth_routes, admin_routes, branch_routes,auditor_routes
 
 # Register blueprints
 app.register_blueprint(auth_routes.bp)
 app.register_blueprint(admin_routes.bp, url_prefix='/admin')
 app.register_blueprint(branch_routes.bp, url_prefix='/branch')
+app.register_blueprint(auditor_routes.bp, url_prefix='/auditor')
+
 
 @app.route('/')
 def index():
